@@ -1,7 +1,6 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-import math
 
 # Initialize MediaPipe Hand components
 mp_hands = mp.solutions.hands
@@ -26,33 +25,30 @@ while cap.isOpened():
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
             # Get the coordinates of the index finger tip and thumb tip
-            index_finger_tip = np.array([hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x,
-                                         hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y])
-            thumb_tip = np.array([hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x,
-                                  hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y])
+            index_finger_tip = [hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x,
+                                hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y]
+            thumb_tip = [hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x,
+                         hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y]
 
-            # Calculate the angle between the line connecting the thumb and index finger tips and the horizontal line
-            angle = math.degrees(math.atan2(index_finger_tip[1] - thumb_tip[1], index_finger_tip[0] - thumb_tip[0]))
+            # Calculate the average y-coordinate of all the hand landmarks
+            avg_y = np.mean([landmark.y for landmark in hand_landmarks.landmark])
 
-            # Normalize the angle to the range [0, 180]
-            angle = abs(angle) % 180
-
-            # Map the angle to a color (you can customize this mapping)
-            color = (int(angle), 255 - int(angle), 255)
+            # Map the average y-coordinate to a color value (you can customize this mapping)
+            color_value = int(avg_y * 255)
+            color = (color_value, 255 - color_value, 255)
 
             # Calculate the Euclidean distance between the index finger tip and thumb tip
-            distance = np.linalg.norm(index_finger_tip - thumb_tip)
+            distance = np.linalg.norm(np.array(index_finger_tip) - np.array(thumb_tip))
 
             # Calculate the midpoint between the index finger tip and thumb tip
-            midpoint = (index_finger_tip + thumb_tip) / 2
+            midpoint = [(index_finger_tip[0] + thumb_tip[0]) / 2, (index_finger_tip[1] + thumb_tip[1]) / 2]
 
             # Convert the midpoint and radius to pixel coordinates
             circle_center = (int(midpoint[0] * image.shape[1]), int(midpoint[1] * image.shape[0]))
             circle_radius = int(distance * image.shape[1] / 2)
 
-            thickness = 20
-            # Draw the colored circle
-            cv2.circle(image, circle_center, circle_radius, color, thickness)
+            # Draw the colored circle with thickness 5
+            cv2.circle(image, circle_center, circle_radius, color, 5)
 
             # Draw the hand landmarks
             mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
