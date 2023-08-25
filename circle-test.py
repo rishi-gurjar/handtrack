@@ -50,6 +50,7 @@ while cap.isOpened():
                 # Toggle the circle state
                 circle_open = not circle_open
 
+            print(1)
             # Map the average y-coordinate to a color value (you can customize this mapping)
             color = (255, 255, 255)
 
