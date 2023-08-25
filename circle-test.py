@@ -15,6 +15,8 @@ cap = cv2.VideoCapture(0)
 previous_distance = None
 circle_open = False
 
+count = 0
+
 while cap.isOpened():
     ret, image = cap.read()
     if not ret:
@@ -45,13 +47,38 @@ while cap.isOpened():
             circle_center = (int(midpoint[0] * image.shape[1]), int(midpoint[1] * image.shape[0]))
             circle_radius = int(distance * image.shape[1] / 2)
 
+
             # Check if the tips are touching
-            if previous_distance is not None and previous_distance > 0.02 and distance < 0.05:
+            if previous_distance is not None and previous_distance > 0.02 and distance < 0.08:
                 # Toggle the circle state
                 circle_open = not circle_open
 
-            print(1)
-            # Map the average y-coordinate to a color value (you can customize this mapping)
+            num_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+            avg_y = np.mean([landmark.y for landmark in hand_landmarks.landmark])
+
+            current_y = avg_y
+
+
+            if(count == 0):
+                array_count = 4
+                print(num_array[array_count])
+                saved_y = 0
+                count += 1
+            else:
+                if(current_y < saved_y and array_count != 9):
+                    array_count += 1
+                    saved_y = current_y
+                elif(current_y > saved_y and array_count != 0):
+                    array_count -= 1
+                    saved_y = current_y
+
+            print("Array index: ", num_array[array_count])
+
+            #print("Saved y: ", saved_y)
+            #print("Current y: ", current_y)
+            #print("Count:", count)
+
             color = (255, 255, 255)
 
             # Draw the colored circle only if circle_open is True
