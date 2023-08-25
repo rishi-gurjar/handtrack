@@ -9,7 +9,11 @@ hands = mp_hands.Hands()
 mp_drawing = mp.solutions.drawing_utils
 
 # Capture video stream from webcam
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
+
+# Variables to keep track of the previous distance and circle state
+previous_distance = None
+circle_open = False
 
 while cap.isOpened():
     ret, image = cap.read()
@@ -31,15 +35,6 @@ while cap.isOpened():
             thumb_tip = np.array([hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x,
                                   hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y])
 
-            # Calculate the angle between the line connecting the thumb and index finger tips and the horizontal line
-            angle = math.degrees(math.atan2(index_finger_tip[1] - thumb_tip[1], index_finger_tip[0] - thumb_tip[0]))
-
-            # Normalize the angle to the range [0, 180]
-            angle = abs(angle) % 180
-
-            # Map the angle to a color (you can customize this mapping)
-            color = (int(angle), 255 - int(angle), 255)
-
             # Calculate the Euclidean distance between the index finger tip and thumb tip
             distance = np.linalg.norm(index_finger_tip - thumb_tip)
 
@@ -50,12 +45,23 @@ while cap.isOpened():
             circle_center = (int(midpoint[0] * image.shape[1]), int(midpoint[1] * image.shape[0]))
             circle_radius = int(distance * image.shape[1] / 2)
 
-            thickness = 20
-            # Draw the colored circle
-            cv2.circle(image, circle_center, circle_radius, color, thickness)
+            # Check if the tips are touching
+            if previous_distance is not None and previous_distance > 0.02 and distance < 0.05:
+                # Toggle the circle state
+                circle_open = not circle_open
+
+            # Map the average y-coordinate to a color value (you can customize this mapping)
+            color = (255, 255, 255)
+
+            # Draw the colored circle only if circle_open is True
+            if circle_open:
+                cv2.circle(image, circle_center, circle_radius, color, 20)
 
             # Draw the hand landmarks
             mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+            # Update previous_distance for the next iteration
+            previous_distance = distance
 
     # Convert the image back to BGR for displaying
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
