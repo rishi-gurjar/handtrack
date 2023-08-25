@@ -61,19 +61,19 @@ while cap.isOpened():
 
 
             if(count == 0):
-                array_count = 4
-                print(num_array[array_count])
+                index = 4
+                print(num_array[index])
                 saved_y = 0
                 count += 1
             else:
-                if(current_y < saved_y and array_count != 9):
-                    array_count += 1
+                if(current_y < saved_y and index != 9):
+                    index += 1
                     saved_y = current_y
-                elif(current_y > saved_y and array_count != 0):
-                    array_count -= 1
+                elif(current_y > saved_y and index != 0):
+                    index -= 1
                     saved_y = current_y
 
-            print("Array index: ", num_array[array_count])
+            print("Array index: ", num_array[index])
 
             #print("Saved y: ", saved_y)
             #print("Current y: ", current_y)
