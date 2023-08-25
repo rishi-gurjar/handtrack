@@ -1,5 +1,5 @@
 # handtrack
-JARVIS hand-tracking testing
+JARVIS hand tracking testing
 ```
 
              _        _                   _     _          _        _         _        
