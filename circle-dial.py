@@ -15,6 +15,8 @@ cap = cv2.VideoCapture(0)
 previous_distance = None
 circle_open = False
 
+count = 0
+
 while cap.isOpened():
     ret, image = cap.read()
     if not ret:
@@ -45,13 +47,39 @@ while cap.isOpened():
             circle_center = (int(midpoint[0] * image.shape[1]), int(midpoint[1] * image.shape[0]))
             circle_radius = int(distance * image.shape[1] / 2)
 
+
             # Check if the tips are touching
-            if previous_distance is not None and previous_distance > 0.02 and distance < 0.05:
+            if previous_distance is not None and previous_distance > 0.02 and distance < 0.08:
                 # Toggle the circle state
                 circle_open = not circle_open
 
-            print(1)
-            # Map the average y-coordinate to a color value (you can customize this mapping)
+            num_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+            # Calculate the angle between the line connecting the thumb and index finger tips and the horizontal line
+            current_angle = math.degrees(math.atan2(index_finger_tip[1] - thumb_tip[1], index_finger_tip[0] - thumb_tip[0]))
+
+            # Normalize the angle to the range [0, 180]
+            current_angle = abs(current_angle) % 180
+
+            if(count == 0):
+                array_count = 4
+                print(num_array[array_count])
+                saved_angle = 0
+                count += 1
+            else:
+                if(((current_angle - saved_angle) < 0.5) and array_count != 9):
+                    array_count += 1
+                    saved_angle = current_angle
+                elif(((current_angle - saved_angle) > 0.5) and array_count != 0):
+                    array_count -= 1
+                    saved_angle = current_angle
+
+            print("Array index: ", num_array[array_count])
+
+            print("Saved Angle: ", saved_angle)
+            print("Current Angle: ", current_angle)
+            print("Count:", count)
+
             color = (255, 255, 255)
 
             # Draw the colored circle only if circle_open is True
