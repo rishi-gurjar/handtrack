@@ -1,3 +1,5 @@
+# ROTATIONAL INDEXING
+
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -55,29 +57,30 @@ while cap.isOpened():
 
             num_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-            avg_y = np.mean([landmark.y for landmark in hand_landmarks.landmark])
+            # Calculate the angle between the line connecting the thumb and index finger tips and the horizontal line
+            current_angle = math.degrees(math.atan2(index_finger_tip[1] - thumb_tip[1], index_finger_tip[0] - thumb_tip[0]))
 
-            current_y = avg_y
-
+            # Normalize the angle to the range [0, 180]
+            current_angle = abs(current_angle) % 180
 
             if(count == 0):
-                index = 4
-                print(num_array[index])
-                saved_y = 0
+                array_count = 4
+                print(num_array[array_count])
+                saved_angle = 0
                 count += 1
             else:
-                if(current_y < saved_y and index != 9):
-                    index += 1
-                    saved_y = current_y
-                elif(current_y > saved_y and index != 0):
-                    index -= 1
-                    saved_y = current_y
+                if(((current_angle - saved_angle) < 0.5) and array_count != 9):
+                    array_count += 1
+                    saved_angle = current_angle
+                elif(((current_angle - saved_angle) > 0.5) and array_count != 0):
+                    array_count -= 1
+                    saved_angle = current_angle
 
-            print("Array index: ", num_array[index])
+            print("Array index: ", num_array[array_count])
 
-            #print("Saved y: ", saved_y)
-            #print("Current y: ", current_y)
-            #print("Count:", count)
+            print("Saved Angle: ", saved_angle)
+            print("Current Angle: ", current_angle)
+            print("Count:", count)
 
             color = (255, 255, 255)
 
