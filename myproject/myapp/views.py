@@ -25,5 +25,6 @@ def send_dictionary(request):
         dataJSON = dumps(n)
         return render(request, 'landing.html', {'data': dataJSON})
     
-
-    # RUN python manage.py runserver
+    # start venv: source myenv/bin/activate
+    # RUN python: manage.py runserver
+    # verify django install: pip show django
