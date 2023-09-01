@@ -1,5 +1,19 @@
+
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    name = 69
+    return render_template('index.html', name=name)
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8000)  # Note the port number
+
+
+"""
 from flask import Flask, render_template, jsonify
-import threading
 from script import run_script  # Import the function from script.py
 
 app = Flask(__name__)
@@ -17,6 +31,6 @@ def change_color(color):
     return jsonify({'color': square_colors['square_1']})
 
 if __name__ == '__main__':
-    t = threading.Thread(target=run_script)
-    t.start()
     app.run(debug=True, port=5002)  # Note the port number
+
+    """
