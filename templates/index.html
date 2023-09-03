@@ -9,12 +9,13 @@
 <body>
 
     <script>
-    const socket = io.connect('http://127.0.0.1:5000');
+    const socket = io.connect('http://127.0.0.1:5000'); // http://localhost:5000
 
         socket.on('connect', function() {
             console.log('Connected to server.');
         });
 
+        
         socket.on('new_number', function(data) {
             console.log('New number received:', data.number);
         });
@@ -22,6 +23,7 @@
     </script>
     <p>Hello World...</p>
 
+    <p>Data is: {data.number} </p>
     <div class="grid-container">
         <div id="square_1" class="grid-item color-1"></div>  <!-- Removed numbers -->
         <div class="grid-item color-2"></div>
