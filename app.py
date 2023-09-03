@@ -2,10 +2,9 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 import random
 import time
-import eventlet
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:5000", "http://127.0.0.1:5000"])
 
 @app.route('/')
 def index():
