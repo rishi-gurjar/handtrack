@@ -28,14 +28,6 @@ def background_task(sid):
         threading.Timer(1, emit_number).start()
     emit_number()
 
-"""
-    while True:
-        random_number = random.choice(numbers)
-        print('Emitting new number:', random_number)
-        socketio.emit('server event', {'data': random_number}, room=sid)  # Use the sid as room
-        Timer(1, background_task, args=(sid,)).start()
-        #time.sleep(1)
-"""
 if __name__ == '__main__':
     print("About to run the app.")
     try:
