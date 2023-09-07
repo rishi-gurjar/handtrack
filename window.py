@@ -8,13 +8,14 @@ import cv2
 def update_gui():
     num, frame = indexer.rotate()
     if num is not None:
+        print("2nd text", num)
         subtitle_label.config(text=num)
     if frame is not None:
         img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         imgtk = ImageTk.PhotoImage(image=img)
         img_label.imgtk = imgtk
         img_label.configure(image=imgtk)
-    window.after(100, update_gui)
+    window.after(300, update_gui)
 
 window = tk.Tk()
 window.title("Hello World")
