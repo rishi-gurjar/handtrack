@@ -9,6 +9,8 @@ class RotationalIndexer:
         self.hands = self.mp_hands.Hands()
         self.mp_drawing = mp.solutions.drawing_utils
         self.cap = cv2.VideoCapture(0)
+        self.cap.set(3, 640)  # set video width
+        self.cap.set(4, 480)  # set video height
         self.previous_distance = None
         self.circle_open = False
         self.count = 0
@@ -18,7 +20,17 @@ class RotationalIndexer:
     def rotate(self):
         ret, image = self.cap.read()
         if not ret:
-            return None
+            return None, None
+
+        # Convert the BGR image to RGB
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        # Process the image and find hand landmarks
+        results = self.hands.process(image_rgb)
+
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                self.mp_drawing.draw_landmarks(image, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self.hands.process(image)
@@ -52,9 +64,10 @@ class RotationalIndexer:
                         self.saved_angle = current_angle
 
                 self.previous_distance = distance
-                return num_array[self.array_count]
+            return num_array[self.array_count], image  # Return both index and image
+
         else:
-            return None
+            return None, None
 
     def run(self):
         while self.cap.isOpened():
@@ -72,7 +85,7 @@ class RotationalIndexer:
                     self.mp_drawing.draw_landmarks(image, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
             
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            cv2.imshow('Hand Landmarks', image)
+            #cv2.imshow('Hand Landmarks', image)
 
             if cv2.waitKey(5) & 0xFF == 27:
                 break
