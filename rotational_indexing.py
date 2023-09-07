@@ -52,18 +52,27 @@ class RotationalIndexer:
                 current_angle = math.degrees(math.atan2(index_finger_tip[1] - thumb_tip[1], index_finger_tip[0] - thumb_tip[0]))
                 current_angle = abs(current_angle) % 180
 
+                print("array count", self.array_count)
+                print("current angle", current_angle)
+                print("saved angle", self.saved_angle)
+                print("count", self.count)
+
                 if self.count == 0:
                     self.saved_angle = 0
+                    self.array_count = 4
                     self.count += 1
                 else:
-                    if abs(current_angle - self.saved_angle) < 0.5 and self.array_count != 9:
+                    if ((current_angle - self.saved_angle) < 0.5) and self.array_count != 9:
+                    # if abs(current_angle > self.saved_angle) and self.array_count != 9:
                         self.array_count += 1
                         self.saved_angle = current_angle
-                    elif abs(current_angle - self.saved_angle) > 0.5 and self.array_count != 0:
+                    elif ((current_angle - self.saved_angle) > 0.5) and self.array_count != 0:
+                    # elif abs(current_angle < self.saved_angle) and self.array_count != 0:
                         self.array_count -= 1
                         self.saved_angle = current_angle
 
                 self.previous_distance = distance
+            print("1st text", num_array[self.array_count])
             return num_array[self.array_count], image  # Return both index and image
 
         else:
@@ -71,7 +80,6 @@ class RotationalIndexer:
 
     def run(self):
         while self.cap.isOpened():
-            index = self.rotate()
             
             ret, image = self.cap.read()
             if not ret:
