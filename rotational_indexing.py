@@ -3,7 +3,10 @@ import mediapipe as mp
 import numpy as np
 import math
 
+#rishi text
 # RotationalIndexer
+
+# rahul text
 class RotationalIndexer:
     def __init__(self):
         self.mp_hands = mp.solutions.hands
