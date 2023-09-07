@@ -4,6 +4,8 @@ import numpy as np
 import math
 
 # RotationalIndexer
+
+# rahul text
 class RotationalIndexer:
     def __init__(self):
         self.mp_hands = mp.solutions.hands
